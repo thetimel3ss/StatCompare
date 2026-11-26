@@ -245,6 +245,7 @@ function SC_Localization_enUS()
 		["Ranged Attack Power"]		= "RANGEDATTACKPOWER",
 		["health every 5 sec"]		= "HEALTHREG",
 		["Healing Spells"] 		= "HEAL",
+		["Healing"]			= "HEAL",
 		["Increases Healing"] 		= "HEAL",
 		["mana every 5 sec"] 		= "MANAREG",
 		["Mana Regen"]			= "MANAREG",

@@ -1546,7 +1546,9 @@ StatCompare_EnchantsById = {
 	[2718] = { ["enchantId"] = "2718", ["effect"] = "Lesser Rune of Warding" },
 	[2719] = { ["enchantId"] = "2719", ["effect"] = "Lesser Ward of Shielding" },
 	[2720] = { ["enchantId"] = "2720", ["effect"] = "Greater Ward of Shielding" },
-	[2721] = { ["enchantId"] = "2721", ["effect"] = "+15 Spell Power and +14 Critical Strike Rating" }
+	[2721] = { ["enchantId"] = "2721", ["effect"] = "+15 Spell Power and +14 Critical Strike Rating" },
+	-- OctoWoW belt enchant.
+	[3057] = { ["enchantId"] = "3057", ["effect"] = "Healing +8" }
 }
 
 
