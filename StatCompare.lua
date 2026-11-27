@@ -319,21 +319,45 @@ function StatCompare_SetupDressHook()
 
 end
 
-function StatCompare_Register(register)
-	if (register == 1) then
-		this:RegisterEvent("PLAYER_ENTERING_WORLD");
-		this:RegisterEvent("UNIT_INVENTORY_CHANGED");
-		this:RegisterEvent("PLAYER_LOGOUT");
-		this:RegisterEvent("PLAYER_ENTERING_WORLD");
-		this:RegisterEvent("UNIT_NAME_UPDATE");
+function StatCompare_Register(enable)
+	local frame = StatCompareFrame;
+	if (enable == 1) then
+		frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+		frame:RegisterEvent("UNIT_INVENTORY_CHANGED");
+		frame:RegisterEvent("PLAYER_LOGOUT");
+		frame:RegisterEvent("UNIT_NAME_UPDATE");
 	else
-		this:UnregisterEvent("PLAYER_ENTERING_WORLD");
-		this:UnregisterEvent("UNIT_INVENTORY_CHANGED");
-		this:UnregisterEvent("PLAYER_LOGOUT");
-		this:UnregisterEvent("PLAYER_ENTERING_WORLD");
-		this:UnregisterEvent("UNIT_NAME_UPDATE");
+		frame:UnregisterEvent("PLAYER_ENTERING_WORLD");
+		frame:UnregisterEvent("UNIT_INVENTORY_CHANGED");
+		frame:UnregisterEvent("PLAYER_LOGOUT");
+		frame:UnregisterEvent("UNIT_NAME_UPDATE");
 	end
 end
+
+local StatCompare_isLoaded = 0;
+local function StatCompare_Initialize()
+	if(StatCompare_isLoaded ~= 1) then
+		StatCompare_InitConfig();
+	end
+	if (not StatCompare_CharStats_Scan) then
+		-- in 2006 i think dude made a separate addon but changed the base addon to make it work.
+		-- So there's this spell book that does nothing but is always visible.
+		-- I can't find the addon online but it surely exists somewhere,
+		-- so I haven't removed the code but.. now it'll only show when it's abble to be useful.
+		StatCompareSelfFrameSpellsButton:Hide()
+		StatCompareTargetFrameSpellsButton:Hide()
+	end
+	local showIcon = StatCompare_GetSetting("ShowMinimapIcon");
+	if(showIcon == 0 and StatCompareMinimapFrame and StatCompareMinimapFrame:IsVisible()) then
+		StatCompareMinimapFrame:Hide();
+	elseif(showIcon == 1 and StatCompareMinimapFrame and not StatCompareMinimapFrame:IsVisible()) then
+		StatCompareMinimapFrame:Show();
+		StatCompareMinimapButton_UpdatePosition()
+	end
+	StatCompare_isLoaded=1;
+end
+
+local StatCompare_CancelInventoryRefresh;
 
 function STATCOMPARE_SlashCmdHandler(msg)
 	local GREEN = GREEN_FONT_COLOR_CODE;
@@ -371,16 +395,18 @@ function STATCOMPARE_SlashCmdHandler(msg)
 		StatCompare_IsDebugMode = false
 			DEFAULT_CHAT_FRAME:AddMessage(GREEN.." StatCompare  "..CLOSE.." Debugging disabled");
 	elseif (msg == "on") then
+		StatCompare_SaveVar["enable"] = 1;
+		StatCompare_enable = 1;
 		StatCompare_Register(1);
 		StatCompare_SetupHook(1);
-		StatCompare_SaveVar["enable"]=1;
-		StatCompare_enable=1;
+		StatCompare_Initialize();
 		DEFAULT_CHAT_FRAME:AddMessage("StatCompare "..GREEN..STATCOMPARE_MSG_ADDON_ENABLED..CLOSE);
 	elseif (msg == "off") then
+		StatCompare_SaveVar["enable"] = 0;
+		StatCompare_enable = 0;
 		StatCompare_Register(0);
 		StatCompare_SetupHook(0);
-		StatCompare_SaveVar["enable"]=0;
-		StatCompare_enable=0;
+		StatCompare_CancelInventoryRefresh();
 		DEFAULT_CHAT_FRAME:AddMessage("StatCompare "..GREEN..STATCOMPARE_MSG_ADDON_DISABLED..CLOSE);
 	elseif (msg == "DressOn") then
 		StatCompare_IsDressUpStat=1;
@@ -400,7 +426,6 @@ function STATCOMPARE_SlashCmdHandler(msg)
 	end
 end
 
-local StatCompare_isLoaded=0
 function StatCompare_OnEvent()
 	if( event == "VARIABLES_LOADED" ) then
 		if( not StatCompare_SaveVar ) then
@@ -422,28 +447,10 @@ function StatCompare_OnEvent()
 		end
 	end
 
-	if ((event == "PLAYER_ENTERING_WORLD" or event=="UNIT_NAME_UPDATE") and StatCompare_enable) then
-		if(StatCompare_isLoaded ~= 1) then
-			StatCompare_InitConfig();
-		end
-		if (not StatCompare_CharStats_Scan) then
-			-- in 2006 i think dude made a separate addon but changed the base addon to make it work.
-			-- So there's this spell book that does nothing but is always visible.
-			-- I can't find the addon online but it surely exists somewhere,
-			-- so I haven't removed the code but.. now it'll only show when it's abble to be useful.
-			StatCompareSelfFrameSpellsButton:Hide()
-			StatCompareTargetFrameSpellsButton:Hide()
-		end
-		local showIcon = StatCompare_GetSetting("ShowMinimapIcon");
-		if(showIcon == 0 and StatCompareMinimapFrame and StatCompareMinimapFrame:IsVisible()) then
-			StatCompareMinimapFrame:Hide();
-		elseif(showIcon == 1 and StatCompareMinimapFrame and not StatCompareMinimapFrame:IsVisible()) then
-			StatCompareMinimapFrame:Show();
-			StatCompareMinimapButton_UpdatePosition()
-		end
-		StatCompare_isLoaded=1;
+	if (event == "PLAYER_ENTERING_WORLD" or event == "UNIT_NAME_UPDATE") and StatCompare_enable == 1 then
+		StatCompare_Initialize();
 	end
-	if ( (event == "UNIT_INVENTORY_CHANGED") and StatCompare_enable and StatCompare_isLoaded==1) then
+	if ( (event == "UNIT_INVENTORY_CHANGED") and StatCompare_enable == 1 and StatCompare_isLoaded==1) then
 		-- PERF: this event fires in bursts (gear-set swaps, durability, ammo...).
 		-- Coalesce it and only refresh once things settle, and only if gear really changed.
 		if (arg1 == "player" or arg1 == "target") then
@@ -469,6 +476,12 @@ SC_RefreshFrame:SetScript("OnUpdate", function()
 	end
 end);
 
+StatCompare_CancelInventoryRefresh = function()
+	SC_RefreshFrame:Hide();
+	SC_PendingRefresh = {};
+	SC_RefreshTimer = 0;
+end;
+
 function StatCompare_QueueInventoryRefresh(unit)
 	SC_PendingRefresh[unit] = true;
 	SC_RefreshTimer = 0.25;
@@ -476,7 +489,7 @@ function StatCompare_QueueInventoryRefresh(unit)
 end
 
 function StatCompare_DoInventoryRefresh(unit)
-	if (not StatCompare_enable or StatCompare_isLoaded ~= 1) then return; end
+	if (StatCompare_enable ~= 1 or StatCompare_isLoaded ~= 1) then return; end
 	-- Gear unchanged (durability tick, ammo...) -> nothing to redraw.
 	local cached = StatScanner_GearCache and StatScanner_GearCache[unit];
 	if (cached) then
@@ -496,7 +509,7 @@ function StatCompare_DoInventoryRefresh(unit)
 			else
 				SCShowFrame(StatCompareSelfFrame,PaperDollFrame,UnitName("player"),tiptext,-30,-12);
 			end
-		elseif ((arg1 == "target") and StatCompare_enable and StatCompare_isLoaded==1 and StatCompareTargetFrame:IsVisible()) then
+		elseif ((arg1 == "target") and StatCompare_enable == 1 and StatCompare_isLoaded==1 and StatCompareTargetFrame:IsVisible()) then
 			SCHideFrame(StatCompareTargetFrame);
 			local tiptext = StatCompare_UpdateAndGetTooltipText(StatScanner_bonuses,0);
 			SCShowFrame(StatCompareTargetFrame,InspectFrame,UnitName("target"),tiptext,-5,-12);

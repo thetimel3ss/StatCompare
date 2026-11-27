@@ -313,33 +313,37 @@ function StatCompare_InitConfig()
 end
 
 function StatCompare_CheckRealm()
-	if ( StatCompare_Info["Settings"] ) then
-		local old = StatCompare_Info["Settings"][playerName];
-			
-		if ( old ) then
-			if ( not StatCompare_Info[realmName] ) then
-				StatCompare_Info[realmName] = { };
-				for _,tab in pairs(tabs) do
-					StatCompare_Info[realmName][tab] = { };
+	local legacySettings = StatCompare_Info["Settings"];
+	if not legacySettings then return; end
+
+	local old = legacySettings[playerName];
+	if old then
+		local realm = StatCompare_Info[realmName] or {};
+		StatCompare_Info[realmName] = realm;
+		realm["Settings"] = realm["Settings"] or {};
+
+		local settings = realm["Settings"][playerName] or {};
+		realm["Settings"][playerName] = settings;
+		for key, value in pairs(old) do
+			if settings[key] == nil then
+				settings[key] = value;
+			end
+		end
+		if StatCompare_Player then
+			StatCompare_Player["Settings"] = StatCompare_Player["Settings"] or {};
+			for key in pairs(old) do
+				if StatCompare_Player["Settings"][key] == nil then
+					StatCompare_Player["Settings"][key] = settings[key];
 				end
 			end
-				
-			StatCompare_Info[realmName][tab][playerName] = { };
-			for k, v in pairs(old) do
-				StatCompare_Info[realmName][tab][playerName][k] = v;
-			end
-			StatCompare_Info[tab][playerName] = nil;
 		end
-			
-		-- clean out cruft, if we have some
-		StatCompare_Info["Settings"][UNKNOWNOBJECT] = nil;
-		StatCompare_Info["Settings"][UKNOWNBEING] = nil;
-		
-		-- Duh, table.getn doesn't work because there
-		-- aren't any integer keys in this table
-		if ( next(StatCompare_Info["Settings"]) == nil ) then
-			StatCompare_Info["Settings"] = nil;
-		end
+		legacySettings[playerName] = nil;
+	end
+
+	if UNKNOWNOBJECT then legacySettings[UNKNOWNOBJECT] = nil; end
+	if UNKNOWNBEING then legacySettings[UNKNOWNBEING] = nil; end
+	if next(legacySettings) == nil then
+		StatCompare_Info["Settings"] = nil;
 	end
 end
 
