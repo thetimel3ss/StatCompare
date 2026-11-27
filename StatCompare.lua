@@ -322,14 +322,10 @@ end
 function StatCompare_Register(enable)
 	local frame = StatCompareFrame;
 	if (enable == 1) then
-		frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 		frame:RegisterEvent("UNIT_INVENTORY_CHANGED");
-		frame:RegisterEvent("PLAYER_LOGOUT");
 		frame:RegisterEvent("UNIT_NAME_UPDATE");
 	else
-		frame:UnregisterEvent("PLAYER_ENTERING_WORLD");
 		frame:UnregisterEvent("UNIT_INVENTORY_CHANGED");
-		frame:UnregisterEvent("PLAYER_LOGOUT");
 		frame:UnregisterEvent("UNIT_NAME_UPDATE");
 	end
 end
@@ -445,7 +441,7 @@ function StatCompare_OnEvent()
 		end
 	end
 
-	if (event == "PLAYER_ENTERING_WORLD" or event == "UNIT_NAME_UPDATE") and StatCompare_enable == 1 then
+	if event == "PLAYER_ENTERING_WORLD" or (event == "UNIT_NAME_UPDATE" and StatCompare_enable == 1) then
 		StatCompare_Initialize();
 	end
 	if ( (event == "UNIT_INVENTORY_CHANGED") and StatCompare_enable == 1 and StatCompare_isLoaded==1) then
@@ -454,7 +450,7 @@ function StatCompare_OnEvent()
 		if (arg1 == "player" or arg1 == "target") then
 			StatCompare_QueueInventoryRefresh(arg1);
 		end
-	elseif ( event == "PLAYER_LOGOUT" ) then
+	elseif (event == "PLAYER_LOGOUT" and StatCompare_isLoaded == 1) then
 		-- save the player settings
 		StatCompare_SaveConfigInfo();
 	end

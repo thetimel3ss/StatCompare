@@ -49,8 +49,11 @@ if ( GetLocale() == "zhCN" ) then
 	STATCOMPARE_DISPLAY_HEALTH = "生命值";
 	STATCOMPARE_DISPLAY_MANA = "法力值";
 
-	STATCOMPARE_TOOLTIP_MINIMAP = "装备属性统计&比较\n点击打开配置主窗口\n";
-	STATCOMPARE_TOOLTIP_MINIMAP1 = "装备属性统计&比较\n点击打开配置主窗口\n";
+	STATCOMPARE_TOOLTIP_MINIMAP = "装备属性统计&比较\n左键点击打开菜单\n";
+	STATCOMPARE_MINIMAP_ENABLE = "启用";
+	STATCOMPARE_MINIMAP_DISABLE = "停用";
+	STATCOMPARE_MINIMAP_CONFIG = "配置";
+	STATCOMPARE_TOOLTIP_MINIMAP1 = "装备属性统计&比较\n左键点击打开菜单\n";
 	STATCOMPARE_MINIMAPBUTTONPOS = "小地图按钮位置";
 	STATCOMPARE_MINIMAPBUTTON_POS_TOOLTIP = "允许你移动装备属性统计&比较窗口图标在迷离地图上的位置";
 	STATCOMPARE_SHOW_MINIMAP_BUTTON = "显示/隐藏小地图按钮";
@@ -103,8 +106,11 @@ elseif( GetLocale() == "zhTW" ) then
 	STATCOMPARE_DISPLAY_HEALTH = "生命力";
 	STATCOMPARE_DISPLAY_MANA = "法力";
 
-	STATCOMPARE_TOOLTIP_MINIMAP = "裝備屬性統計&比較\n左鍵點擊打開配置主窗口\n";
-	STATCOMPARE_TOOLTIP_MINIMAP1 = "裝備屬性統計&比較\n左鍵點擊打開配置主窗口\n右鍵點擊打開裝備集主窗口\n";
+	STATCOMPARE_TOOLTIP_MINIMAP = "裝備屬性統計&比較\n左鍵點擊打開選單\n";
+	STATCOMPARE_MINIMAP_ENABLE = "啟用";
+	STATCOMPARE_MINIMAP_DISABLE = "停用";
+	STATCOMPARE_MINIMAP_CONFIG = "設定";
+	STATCOMPARE_TOOLTIP_MINIMAP1 = "裝備屬性統計&比較\n左鍵點擊打開選單\n右鍵點擊打開裝備集主窗口\n";
 	STATCOMPARE_MINIMAPBUTTONPOS = "小地圖按鈕位置";
 	STATCOMPARE_MINIMAPBUTTON_POS_TOOLTIP = "允許你移動裝備屬性統計&比較窗口圖標在迷離地圖上的位置";
 	STATCOMPARE_SHOW_MINIMAP_BUTTON = "顯示/隱藏小地圖按鈕";
@@ -156,8 +162,11 @@ else
 	STATCOMPARE_DISPLAY_HEALTH = "Life";
 	STATCOMPARE_DISPLAY_MANA = "Mana";
 
-	STATCOMPARE_TOOLTIP_MINIMAP = "StatCompare\nLeft click to open Option Window\n";
-	STATCOMPARE_TOOLTIP_MINIMAP1 = "StatCompare\nLeft click to open Option Window\nRight click to open StatCompareSets Window\n";
+	STATCOMPARE_TOOLTIP_MINIMAP = "StatCompare\nLeft click to open menu\n";
+	STATCOMPARE_MINIMAP_ENABLE = "Enable";
+	STATCOMPARE_MINIMAP_DISABLE = "Disable";
+	STATCOMPARE_MINIMAP_CONFIG = "Config";
+	STATCOMPARE_TOOLTIP_MINIMAP1 = "StatCompare\nLeft click to open menu\nRight click to open StatCompareSets Window\n";
 	STATCOMPARE_MINIMAPBUTTONPOS = "Button position on the Minimap";
 	STATCOMPARE_MINIMAPBUTTON_POS_TOOLTIP = "Allow you adjust the position of StatCompare button on the minimap";
 	STATCOMPARE_SHOW_MINIMAP_BUTTON = "Show/Hide button on the minimap";

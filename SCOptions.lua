@@ -74,7 +74,7 @@ StatCompare_OPTIONS = {
 	["MinimapButtonPosition"] = {
 		["default"] = STATCOMPARE_DEFAULT_MINIMAP_POSITION },
 	["ShowMinimapIcon"] = {
-		["default"] = 0 },
+		["default"] = 1 },
 	["ShowSelfFrame"] = {
 		["default"] = 1	},
 	["ShowBuffBonus"] = {
@@ -149,6 +149,37 @@ function StatCompare_Toggle()
 			getglobal("StatCompareShowBuffBonusOpt"):SetChecked(1);
 		end
 	end
+end
+
+local minimapMenu;
+
+local function StatCompareMinimapMenu_Initialize()
+	local enabled = StatCompare_enable == 1;
+	UIDropDownMenu_AddButton({
+		text = enabled and STATCOMPARE_MINIMAP_DISABLE or STATCOMPARE_MINIMAP_ENABLE,
+		notCheckable = 1,
+		func = function()
+			STATCOMPARE_SlashCmdHandler(enabled and "off" or "on");
+		end,
+	}, 1);
+	UIDropDownMenu_AddButton({
+		text = STATCOMPARE_MINIMAP_CONFIG,
+		notCheckable = 1,
+		func = function()
+			if StatCompareOptFrame and not StatCompareOptFrame:IsVisible() then
+				StatCompare_Toggle();
+			end
+		end,
+	}, 1);
+end
+
+function StatCompareMinimapButton_ShowMenu()
+	GameTooltip:Hide();
+	if not minimapMenu then
+		minimapMenu = CreateFrame("Frame", "StatCompareMinimapMenu", UIParent, "UIDropDownMenuTemplate");
+		UIDropDownMenu_Initialize(minimapMenu, StatCompareMinimapMenu_Initialize, "MENU");
+	end
+	ToggleDropDownMenu(1, nil, minimapMenu, "StatCompareMinimapButton", 0, 0);
 end
 
 function StatCompareMinimapButton_UpdatePosition()

@@ -924,7 +924,7 @@
 								end
 							end
 						else
-							StatCompare_Toggle();
+							StatCompareMinimapButton_ShowMenu();
 						end
 				</OnClick>
 				<OnEnter> 
