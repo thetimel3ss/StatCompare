@@ -19,6 +19,8 @@ function SC_Localization_enUS()
 	STATCOMPARE_CFG_SHOW_OPTIONS_WINDOW="Toggle "..STATCOMPARE_ADDON_NAME.." Configuration window"
 	STATCOMPARE_CFG_SHOW_SETS_WINDOW="Open StatCompareSets window"
 	STATCOMPARE_CFG_TOGGLE_DEBUG="Toggle debugging (shows enchant IDs)"
+	STATCOMPARE_CFG_TOGGLE_FITTING_ROOM="Toggle stats in the fitting room"
+	STATCOMPARE_CFG_REQUIRES_MODULE=" (requires %s)"
 	STATCOMPARE_MSG_ADDON_ENABLED="Enabled"
 	STATCOMPARE_MSG_ADDON_DISABLED="Disabled"
 	STATCOMPARE_MSG_FITTING_ROOM_ENABLED="Fitting Room Enabled"

@@ -363,62 +363,60 @@ function STATCOMPARE_SlashCmdHandler(msg)
 	local GREEN = GREEN_FONT_COLOR_CODE;
 	local CLOSE = FONT_COLOR_CODE_CLOSE;
 	local NORMAL = NORMAL_FONT_COLOR_CODE;
+	local command = string.lower(msg or "");
 
-	if ( (not msg) or (strlen(msg) <= 0 ) or (msg == "help") ) then
+	if (command == "" or command == "help") then
 		DEFAULT_CHAT_FRAME:AddMessage(NORMAL.."StatCompare "..STATCOMPARE_CFG_USAGE..": "..CLOSE);
 		DEFAULT_CHAT_FRAME:AddMessage(GREEN.." /statc help    "..CLOSE.." - ".. STATCOMPARE_CFG_HELP);
 		DEFAULT_CHAT_FRAME:AddMessage(GREEN.." /statc item    "..CLOSE.." - ".. STATCOMPARE_CFG_OPEN_ITEM_CONFIG);
 		DEFAULT_CHAT_FRAME:AddMessage(GREEN.." /statc on | off"..CLOSE.." - ".. STATCOMPARE_CFG_ON_OFF_ADDON);
 		DEFAULT_CHAT_FRAME:AddMessage(GREEN.." /statc debug on | off"..CLOSE.." - ".. STATCOMPARE_CFG_TOGGLE_DEBUG);
-		if(StatCompareOptFrame) then
-			DEFAULT_CHAT_FRAME:AddMessage(GREEN.." /statc config  "..CLOSE.." - "..STATCOMPARE_CFG_SHOW_OPTIONS_WINDOW);
-		end
-		if(StatCompareSetsFrame) then
-			DEFAULT_CHAT_FRAME:AddMessage(GREEN.." /statc sets  "..CLOSE.." - "..STATCOMPARE_CFG_SHOW_SETS_WINDOW);
-		end
-	elseif (msg == "sets") then
+		DEFAULT_CHAT_FRAME:AddMessage(GREEN.." /statc dresson | dressoff"..CLOSE.." - "..STATCOMPARE_CFG_TOGGLE_FITTING_ROOM);
+		DEFAULT_CHAT_FRAME:AddMessage(GREEN.." /statc config  "..CLOSE.." - "..STATCOMPARE_CFG_SHOW_OPTIONS_WINDOW..(StatCompareOptFrame and "" or format(STATCOMPARE_CFG_REQUIRES_MODULE, "StatCompareUI")));
+		DEFAULT_CHAT_FRAME:AddMessage(GREEN.." /statc sets  "..CLOSE.." - "..STATCOMPARE_CFG_SHOW_SETS_WINDOW..(StatCompareSetsFrame and "" or format(STATCOMPARE_CFG_REQUIRES_MODULE, "StatCompareSets")));
+	elseif (command == "sets") then
 		if(StatCompareSetsFrame) then
 			StatCompareSetsFrame:Show();
 		else
 			DEFAULT_CHAT_FRAME:AddMessage(NORMAL.."Need load StatCompareSets plugin first."..CLOSE);
 		end
-	elseif (msg == "config") then
+	elseif (command == "config") then
 		if(StatCompareOptFrame) then
 			StatCompare_Toggle();
 		else
 			DEFAULT_CHAT_FRAME:AddMessage(NORMAL.."Need load StatCompareUI plugin first."..CLOSE);
 		end
-	elseif (msg == "debug on") then
+	elseif (command == "debug on") then
 		StatCompare_IsDebugMode = true
 			DEFAULT_CHAT_FRAME:AddMessage(GREEN.." StatCompare  "..CLOSE.." Debugging enabled");
-	elseif (msg == "debug off") then
+	elseif (command == "debug off") then
 		StatCompare_IsDebugMode = false
 			DEFAULT_CHAT_FRAME:AddMessage(GREEN.." StatCompare  "..CLOSE.." Debugging disabled");
-	elseif (msg == "on") then
+	elseif (command == "on") then
 		StatCompare_SaveVar["enable"] = 1;
 		StatCompare_enable = 1;
 		StatCompare_Register(1);
 		StatCompare_SetupHook(1);
 		StatCompare_Initialize();
 		DEFAULT_CHAT_FRAME:AddMessage("StatCompare "..GREEN..STATCOMPARE_MSG_ADDON_ENABLED..CLOSE);
-	elseif (msg == "off") then
+	elseif (command == "off") then
 		StatCompare_SaveVar["enable"] = 0;
 		StatCompare_enable = 0;
 		StatCompare_Register(0);
 		StatCompare_SetupHook(0);
 		StatCompare_CancelInventoryRefresh();
 		DEFAULT_CHAT_FRAME:AddMessage("StatCompare "..GREEN..STATCOMPARE_MSG_ADDON_DISABLED..CLOSE);
-	elseif (msg == "DressOn") then
+	elseif (command == "dresson") then
 		StatCompare_IsDressUpStat=1;
 		StatCompare_SaveVar["IsDressUpStat"]=1;
 		StatCompare_SetupDressHook();
 		DEFAULT_CHAT_FRAME:AddMessage("StatCompare "..GREEN..STATCOMPARE_MSG_FITTING_ROOM_ENABLED..CLOSE);
-	elseif (msg == "DressOff") then
+	elseif (command == "dressoff") then
 		StatCompare_IsDressUpStat=0;
 		StatCompare_SaveVar["IsDressUpStat"]=0;
 		StatCompare_SetupDressHook();
 		DEFAULT_CHAT_FRAME:AddMessage("StatCompare "..GREEN..STATCOMPARE_MSG_FITTING_ROOM_DISABLED..CLOSE);
-	elseif (msg == "item") then
+	elseif (command == "item") then
 		StatCompare_ItemCollectionFrame:Show();
 	else
 		DEFAULT_CHAT_FRAME:AddMessage(STATCOMPARE_MSG_UNKNOWN_COMMAND..": "..GREEN..msg..CLOSE..
